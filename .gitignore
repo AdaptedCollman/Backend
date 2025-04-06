@@ -1,0 +1,15 @@
+node_modules/
+dist/
+.env
+*.log
+*.env
+*.tsbuildinfo
+coverage/
+.vscode/
+*.tgz
+*.zip
+*.tar
+*.tar.gz
+*.tar.bz2
+*.tar.xz
+*.tar.lz
