@@ -14,10 +14,12 @@ export const createQuestion = async (req: Request, res: Response) => {
     });
 
     const savedQuestion = await newQuestion.save();
-    return res.status(201).json(savedQuestion);
+     res.status(201).json(savedQuestion);
+     return;
   } catch (err) {
     console.error(err);
-    return res.status(500).json({ error: 'Error creating question' });
+    res.status(500).json({ error: 'Error creating question' });
+    return;
   }
 };
 
@@ -30,10 +32,12 @@ export const getQuestions = async (req: Request, res: Response) => {
     if (difficulty) query.difficulty = { $lte: Number(difficulty) };
 
     const questions = await Question.find(query);
-    return res.status(200).json(questions);
+    res.status(200).json(questions);
+    return;
   } catch (err) {
     console.error(err);
-    return res.status(500).json({ error: 'Error fetching questions' });
+     res.status(500).json({ error: 'Error fetching questions' });
+     return;
   }
 };
 
@@ -49,13 +53,16 @@ export const updateQuestion = async (req: Request, res: Response) => {
     );
 
     if (!updatedQuestion) {
-      return res.status(404).json({ error: 'Question not found' });
+      res.status(404).json({ error: 'Question not found' });
+      return;
     }
 
-    return res.status(200).json(updatedQuestion);
+    res.status(200).json(updatedQuestion);
+    return;
   } catch (err) {
     console.error(err);
-    return res.status(500).json({ error: 'Error updating question' });
+    res.status(500).json({ error: 'Error updating question' });
+    return;
   }
 };
 
@@ -66,12 +73,15 @@ export const deleteQuestion = async (req: Request, res: Response) => {
     const deletedQuestion = await Question.findByIdAndDelete(questionId);
 
     if (!deletedQuestion) {
-      return res.status(404).json({ error: 'Question not found' });
+      res.status(404).json({ error: 'Question not found' });
+      return;
     }
 
-    return res.status(200).json({ message: 'Question deleted successfully' });
+    res.status(200).json({ message: 'Question deleted successfully' });
+    return;
   } catch (err) {
     console.error(err);
-    return res.status(500).json({ error: 'Error deleting question' });
+    res.status(500).json({ error: 'Error deleting question' });
+    return;
   }
 };

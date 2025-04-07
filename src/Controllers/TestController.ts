@@ -46,7 +46,7 @@ export const createTest = async (req: Request, res: Response) => {
 
     await UserQuestion.insertMany(userQuestions);
 
-    return res.status(201).json({
+    res.status(201).json({
       testId: test._id,
       questions: selectedQuestions.map((q: any) => ({
         id: q._id,
@@ -54,9 +54,11 @@ export const createTest = async (req: Request, res: Response) => {
         answerOptions: q.answerOptions
       }))
     });
+    return;
   } catch (err) {
     console.error(err);
-    return res.status(500).json({ error: 'Error creating test' });
+    res.status(500).json({ error: 'Error creating test' });
+    return ;
   }
 };
 
@@ -69,13 +71,16 @@ export const getTest = async (req: Request, res: Response) => {
         // .exec();
   
       if (!test) {
-        return res.status(404).json({ error: 'Error finding test' });
+        res.status(404).json({ error: 'Error finding test' });
+        return;
       }
   
-      return res.status(200).json(test);
+      res.status(200).json(test);
+      return ;
     } catch (err) {
       console.error(err);
-      return res.status(500).json({ error: 'Error fetching test' });
+      res.status(500).json({ error: 'Error fetching test' });
+      return;
     }
 };
 
@@ -88,13 +93,16 @@ export const finishTest = async (req: Request, res: Response) => {
       const test = await Test.findByIdAndUpdate(testId, { endedAt: new Date(), score }, { new: true }).exec();
   
       if (!test) {
-        return res.status(404).json({ error: 'Error: Test not found' });
+        res.status(404).json({ error: 'Error: Test not found' });
+        return ;
       }
   
-      return res.status(200).json({ message: 'Test finished', test });
+      res.status(200).json({ message: 'Test finished', test });
+      return ;
     } catch (err) {
       console.error(err);
-      return res.status(500).json({ error: 'Error finishing test' });
+      res.status(500).json({ error: 'Error finishing test' });
+      return;
     }
   };
   
