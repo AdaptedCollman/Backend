@@ -3,13 +3,17 @@ import {
   createQuestion,
   getQuestions,
   updateQuestion,
-  deleteQuestion
+  deleteQuestion,
+  generateQuestionsAutomatically
 } from "../Controllers/QuestionController";
 
 const router = express.Router();
 
 // יצירת שאלה חדשה
 router.post('/', createQuestion);
+
+// יצירת שאלות באופן אוטומטי
+router.post('/generate', generateQuestionsAutomatically);
 
 // קבלת שאלות (אפשר גם לפי נושא/רמה)
 router.get('/', getQuestions);

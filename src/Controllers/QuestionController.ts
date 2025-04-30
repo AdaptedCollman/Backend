@@ -1,16 +1,19 @@
 import { Request, Response } from 'express';
 import {Question} from '../Models/QuestionModel'; 
+import { generateQuestions } from '../cron/generateQuestions';
+import cron from 'node-cron';
 
 export const createQuestion = async (req: Request, res: Response) => {
   try {
-    const { topic, difficulty, questionText, options, correctAnswer } = req.body;
+    const { content,topic, difficulty, explanation, answerOptions, correctAnswer } = req.body;
 
     const newQuestion = new Question({
+      content,
       topic,
       difficulty,
-      questionText,
-      options,
-      correctAnswer
+      correctAnswer,
+      answerOptions,
+      explanation
     });
 
     const savedQuestion = await newQuestion.save();
@@ -85,3 +88,29 @@ export const deleteQuestion = async (req: Request, res: Response) => {
     return;
   }
 };
+
+  // Function to generate questions automatically
+  export const generateQuestionsAutomatically = async () => {
+    try {
+  
+      // Generate questions based on the prompt
+      const generatedQuestions = await generateQuestions();
+  
+      console.log('Questions generated successfully');
+  
+      return generatedQuestions;
+    } catch (error) {
+      console.error('Error generating questions:', error);
+      throw error;
+    }
+  };
+  
+  // Schedule the cron job to run at 2 AM every day
+  cron.schedule('0 2 * * *', async () => {
+    try {
+      await generateQuestionsAutomatically();
+      console.log("Questions generated successfully");
+    } catch (error) {
+      console.error("Error generating questions:", error);
+    }
+  });

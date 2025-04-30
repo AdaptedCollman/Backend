@@ -1,6 +1,91 @@
 ### Variables
-@baseUrl = http://localhost:3000/api/auth
+@baseUrl = http://localhost:3000
 @authToken = YOUR_AUTH_TOKEN_HERE
+
+### Get all questions
+GET {{baseUrl}}/questions
+Content-Type: application/json
+
+
+### Create new question
+POST {{baseUrl}}/questions
+Content-Type: application/json
+
+{
+    "content": "פחדן : פחד -",
+    "topic": "hebrew",
+    "difficulty": 2,
+    "correctAnswer": "צייתן : לצוות",
+    "answerOptions": ["רגזן : להתעצבן", "צייתן : לצוות", "חולמני : לישון", "קנאי : לשנוא"],
+    "explanation": "תכונת אופי שמקורה בפועל – פחדן נובע מפחד, כמו שצייתן נובע מלצוות."
+}
+
+### Update question
+PUT {{baseUrl}}/questions/6812231abbd3e1dfd4852c53
+Content-Type: application/json
+
+{
+  "content": "מה הפתרון של המשוואה: 3x + 5 = 20?",
+  "topic": "math",
+  "difficulty": 3,
+  "correctAnswer": "5",
+  "answerOptions": ["3", "4", "5", "6"],
+  "explanation": "3x = 15 → x = 5"
+}
+
+### Delete question
+DELETE {{baseUrl}}/questions/6812231abbd3e1dfd4852c53
+Content-Type: application/json
+
+### Generate questions automatically
+POST {{baseUrl}}/questions/generate
+Content-Type: application/json
+
+
+# ### Get all tests
+# GET {{baseUrl}}/tests
+# Content-Type: application/json
+
+# ### Create new test
+# POST {{baseUrl}}/tests
+# Content-Type: application/json
+
+# {
+#   "title": "מבחן מתמטיקה בסיסי",
+#   "questions": ["123", "456", "789"],
+#   "duration": 45,
+#   "passingScore": 70
+# }
+
+# ### Get user questions
+# GET {{baseUrl}}/userQuestions
+# Content-Type: application/json
+
+# ### Create user question record
+# POST {{baseUrl}}/userQuestions
+# Content-Type: application/json
+
+# {
+#   "userId": "123",
+#   "questionId": "456",
+#   "isCorrect": true,
+#   "userAnswer": "5"
+# }
+
+### Get all users
+GET {{baseUrl}}/users
+Content-Type: application/json
+
+### Create new user
+POST {{baseUrl}}/users
+Content-Type: application/json
+
+{
+  "name": "ישראל ישראלי",
+  "email": "israel@example.com",
+  "currentLevel": 1
+}
+
 
 ### Register a new user
 POST {{baseUrl}}/register
