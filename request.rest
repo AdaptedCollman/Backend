@@ -1,5 +1,6 @@
 ### Variables
 @baseUrl = http://localhost:3000
+@authToken = YOUR_AUTH_TOKEN_HERE
 
 ### Get all questions
 GET {{baseUrl}}/questions
@@ -83,4 +84,82 @@ Content-Type: application/json
   "name": "ישראל ישראלי",
   "email": "israel@example.com",
   "currentLevel": 1
-} 
+}
+
+
+### Register a new user
+POST {{baseUrl}}/register
+Content-Type: application/json
+
+{
+    "name": "Test User",
+    "email": "test@example.com",
+    "password": "password123",
+    "confirmPassword": "password123"
+}
+
+### Login user
+POST {{baseUrl}}/login
+Content-Type: application/json
+
+{
+    "email": "test@example.com",
+    "password": "password123"
+}
+
+### Verify Token (Protected Route)
+GET {{baseUrl}}/verify
+Authorization: Bearer {{authToken}}
+
+### Test Invalid Registration - Missing Fields
+POST {{baseUrl}}/register
+Content-Type: application/json
+
+{
+    "name": "Test User",
+    "email": "test@example.com"
+}
+
+### Test Invalid Registration - Password Mismatch
+POST {{baseUrl}}/register
+Content-Type: application/json
+
+{
+    "name": "Test User",
+    "email": "test@example.com",
+    "password": "password123",
+    "confirmPassword": "password456"
+}
+
+### Test Invalid Registration - Invalid Email
+POST {{baseUrl}}/register
+Content-Type: application/json
+
+{
+    "name": "Test User",
+    "email": "invalid-email",
+    "password": "password123",
+    "confirmPassword": "password123"
+}
+
+### Test Invalid Login - Wrong Password
+POST {{baseUrl}}/login
+Content-Type: application/json
+
+{
+    "email": "test@example.com",
+    "password": "wrongpassword"
+}
+
+### Test Invalid Login - Non-existent User
+POST {{baseUrl}}/login
+Content-Type: application/json
+
+{
+    "email": "nonexistent@example.com",
+    "password": "password123"
+}
+
+### Test Invalid Token Verification
+GET {{baseUrl}}/verify
+Authorization: Bearer invalid_token_here 
