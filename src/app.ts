@@ -5,6 +5,7 @@ import questionRoutes from "../src/Routes/QuestionRoute"
 import testRoutes from "../src/Routes/TestRoute"
 import userRoutes from "../src/Routes/UserRoute"
 import userQuestionRoutes from "../src/Routes/UserQuestionRoute"
+// import { startQuestionGenerationCron } from './cron/generateQuestions';
 
 dotenv.config();
 
@@ -28,6 +29,8 @@ const connectDB = async () => {
   try {
     await mongoose.connect(MONGO_URI);
     console.log('Connected to MongoDB');
+    // Start the cron job after successful database connection
+    // startQuestionGenerationCron();
   } catch (err) {
     console.error('MongoDB connection failed:', err);
     throw err;
