@@ -1,5 +1,5 @@
 ### Variables
-@baseUrl = http://localhost:3000
+@baseUrl = http://localhost:3000/api
 @authToken = YOUR_AUTH_TOKEN_HERE
 
 ### Get all questions
