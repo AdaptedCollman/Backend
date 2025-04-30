@@ -28,17 +28,18 @@ export const generateQuestions = async (): Promise<void> => {
 
     // Clean the response by removing the ```json wrapper
     const messageContent = await response.text();
-    const cleanedContent = messageContent.replace(/^```json\n|\n```$/g, '');
-    const cleanedContent2 = cleanedContent.replace(/^```$/g, '');
+    const jsonStart = messageContent.indexOf('[');
+    const jsonEnd = messageContent.lastIndexOf(']');
+    const jsonString = messageContent.slice(jsonStart, jsonEnd + 1);
 
-    console.log('Response from API:', cleanedContent);
+    console.log('Response from API:', jsonString);
 
-    if (!cleanedContent) {
+    if (!jsonString) {
       throw new Error('No valid message content from API');
     }
 
     // Parse and validate the response
-    const generatedQuestions = JSON.parse(cleanedContent2);
+    const generatedQuestions = JSON.parse(jsonString);
 
     // Validate each question
     const validQuestions = generatedQuestions.filter((q: any) => {
@@ -80,6 +81,7 @@ Rules for questions:
 5. Correct answer must be included in answer options
 6. All fields are required except explanation
 7. Dont add id to the questions
+8. All Math and Hebrew questions should be in Hebrew
 
 Example questions:
 ${JSON.stringify(sampleQuestions, null, 2)}
