@@ -154,3 +154,33 @@ export const verifyToken = async (
     });
   }
 };
+
+export const completeOnboarding = async (
+  req: AuthRequest,
+  res: Response
+): Promise<void> => {
+  try {
+    const user = await User.findById(req.user?.userId);
+    if (!user) {
+      res.status(404).json({ message: "User not found" });
+      return;
+    }
+
+    user.hasCompletedOnboarding = true;
+    await user.save();
+
+    res.json({
+      user: {
+        id: user._id,
+        name: user.name,
+        email: user.email,
+        hasCompletedOnboarding: user.hasCompletedOnboarding,
+      },
+    });
+  } catch (error) {
+    console.error("Complete onboarding error:", error);
+    res.status(500).json({
+      message: "Error completing onboarding",
+    });
+  }
+};
