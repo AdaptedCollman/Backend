@@ -9,6 +9,15 @@ export interface IQuestion extends Document {
   explanation?: string;
 }
 
+export type QuestionInput = {
+  content: string;
+  topic: 'math' | 'english' | 'hebrew';
+  difficulty: number;
+  correctAnswer: string;
+  answerOptions: string[];
+  explanation?: string;
+};
+
 const QuestionSchema = new Schema<IQuestion>({
   content: { type: String, required: true },
   topic: { type: String, required: true },
