@@ -7,6 +7,15 @@ GET {{baseUrl}}/questions
 Content-Type: application/json
 
 
+### Generate question via Gemini
+POST {{baseUrl}}/questions
+Content-Type: application/json
+
+{
+  "topic": "english",
+  "difficulty": 3
+}
+
 ### Create new question
 POST {{baseUrl}}/questions
 Content-Type: application/json

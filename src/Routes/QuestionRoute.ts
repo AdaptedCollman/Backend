@@ -15,6 +15,7 @@ router.post('/', createQuestion);
 // יצירת שאלות באופן אוטומטי
 router.post('/generate', generateQuestionsAutomatically);
 
+
 // קבלת שאלות (אפשר גם לפי נושא/רמה)
 router.get('/', getQuestions);
 
