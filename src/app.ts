@@ -7,6 +7,7 @@ import testRoutes from "../src/Routes/TestRoute";
 import userRoutes from "../src/Routes/UserRoute";
 import userQuestionRoutes from "../src/Routes/UserQuestionRoute";
 import authRoutes from "../src/Routes/authRoutes";
+import geminiRoutes from "../src/Routes/geminiRoute";
 
 dotenv.config();
 
@@ -27,6 +28,7 @@ app.use("/api/tests", testRoutes);
 app.use("/api/users", userRoutes);
 app.use("/api/userQuestions", userQuestionRoutes);
 app.use("/api/auth", authRoutes);
+app.use("/api/gemini", geminiRoutes);
 
 const MONGO_URI =
   process.env.MONGODB_URI ||
