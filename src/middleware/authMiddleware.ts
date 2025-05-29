@@ -10,19 +10,21 @@ interface AuthRequest extends Request {
 
 const JWT_SECRET = process.env.JWT_SECRET || "your-default-secret-key";
 
-export const authMiddleware = async (
+export const authMiddleware = (
   req: AuthRequest,
   res: Response,
   next: NextFunction
 ) => {
-  try {
-    const authHeader = req.headers.authorization;
-    if (!authHeader || !authHeader.startsWith("Bearer ")) {
-      res.status(401).json({ message: "No token provided" });
-      return;
-    }
+  const authHeader = req.headers.authorization;
 
-    const token = authHeader.split(" ")[1];
+  if (!authHeader || !authHeader.startsWith("Bearer ")) {
+    res.status(401).json({ message: "No token provided" });
+    return;
+  }
+
+  const token = authHeader.split(" ")[1];
+
+  try {
     const decoded = jwt.verify(token, JWT_SECRET) as {
       userId: string;
       email: string;
@@ -35,6 +37,8 @@ export const authMiddleware = async (
 
     next();
   } catch (error) {
-    res.status(401).json({ message: "Invalid token" });
+    console.error("JWT verification failed:", error);
+    res.status(401).json({ message: "Invalid or expired token" });
+    return;
   }
-}; 
+};

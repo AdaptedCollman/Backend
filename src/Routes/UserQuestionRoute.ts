@@ -6,8 +6,12 @@ import {
   updateUserQuestion,
   deleteUserQuestion
 } from '../Controllers/UserQuestionController';
+import { authMiddleware } from '../middleware/authMiddleware';
 
 const router = express.Router();
+
+router.use(authMiddleware); // שים בהתחלה
+
 
 // יצירת רישום חדש
 router.post('/', createUserQuestion);
@@ -21,7 +25,6 @@ router.get('/:id', getUserQuestionById);
 // עדכון רישום לפי ID
 router.put('/:id', updateUserQuestion);
 
-// מחיקת רישום לפי ID
 router.delete('/:id', deleteUserQuestion);
 
 export default router;

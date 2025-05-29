@@ -4,9 +4,9 @@
   "description": "",
   "main": "server.ts",
   "scripts": {
-    "dev": "nodemon --watch src --ext ts --ignore dist --exec ts-node src/server.ts",
+    "dev": "nodemon --watch src --ext ts --ignore dist --exec ts-node src/index.ts",
     "build": "tsc",
-    "start": "node dist/server.ts"
+    "start": "node dist/index.ts"
   },
   "keywords": [],
   "author": "",
