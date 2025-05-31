@@ -29,6 +29,10 @@ export const trackQuestion = async (req: Request, res: Response) => {
 
   const subj = subject as Subject;
 
+  // Defensive initialization for timeSpent
+  if (typeof stats.subjects[subj].timeSpent !== 'number') stats.subjects[subj].timeSpent = 0;
+  if (typeof stats.totalTimeSpent !== 'number') stats.totalTimeSpent = 0;
+
   stats.subjects[subj].questionsAnswered += 1;
   if (correct) {
     stats.subjects[subj].correctAnswers += 1;
