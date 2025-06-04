@@ -33,6 +33,8 @@ export const trackQuestion = async (req: Request, res: Response) => {
   if (typeof stats.subjects[subj].timeSpent !== 'number') stats.subjects[subj].timeSpent = 0;
   if (typeof stats.totalTimeSpent !== 'number') stats.totalTimeSpent = 0;
 
+  console.log(`[trackQuestion] BEFORE: subject=${subj}, subjectTimeSpent=${stats.subjects[subj].timeSpent}, totalTimeSpent=${stats.totalTimeSpent}`);
+
   stats.subjects[subj].questionsAnswered += 1;
   if (correct) {
     stats.subjects[subj].correctAnswers += 1;
@@ -45,6 +47,13 @@ export const trackQuestion = async (req: Request, res: Response) => {
   stats.totalQuestions += 1;
   if (correct) stats.totalCorrect += 1;
   stats.totalTimeSpent += timeSpent;
+
+  console.log(`[trackQuestion] AFTER: subject=${subj}, subjectTimeSpent=${stats.subjects[subj].timeSpent}, totalTimeSpent=${stats.totalTimeSpent}, timeSpentAdded=${timeSpent}`);
+  console.log(`[trackQuestion] All subjects timeSpent:`, {
+    english: stats.subjects.english.timeSpent,
+    hebrew: stats.subjects.hebrew.timeSpent,
+    math: stats.subjects.math.timeSpent,
+  });
 
   await stats.save();
 
