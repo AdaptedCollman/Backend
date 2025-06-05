@@ -65,8 +65,26 @@ const response = await axios.post(
       throw new Error("Gemini response is not in expected JSON format");
     }
 
-    const parsed: QuestionInput = JSON.parse(jsonMatch[0]);
-    return parsed;
+const parsed = JSON.parse(jsonMatch[0]);
+
+const answerOptions = parsed.options.map((o: any) => o.text);
+const correctOption = parsed.options.find((o: any) => o.id === parsed.correctAnswer);
+if (!correctOption) {
+  throw new Error("correctAnswer ID not found in options");
+}
+
+const questionData: QuestionInput = {
+  content: parsed.question,
+  topic: topic as 'math' | 'english' | 'hebrew', // <- פתרון לבעיה שלך
+  difficulty,
+  correctAnswer: correctOption.text,
+  answerOptions,
+  explanation: parsed.explanation,
+};
+
+return questionData;
+
+
   } catch (error: any) {
     console.error("Error in generateQuestionFromGemini:", error?.message || error);
     throw new Error("Failed to generate question from Gemini");
