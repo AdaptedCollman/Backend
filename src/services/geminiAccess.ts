@@ -16,7 +16,7 @@ export const generateQuestionFromGemini = async (
 השאלה צריכה לכלול:
 - שאלה מנוסחת היטב
 - 4 תשובות אפשריות
-- תשובה נכונה אחת בלבד
+- תשובה נכונה אחת בלבד (תציין את מספרה מ-1 עד 4)
 - הסבר קצר לתשובה
 
 החזר אך ורק JSON תקני עם השדות:
@@ -24,36 +24,22 @@ export const generateQuestionFromGemini = async (
   "content": "נוסח השאלה",
   "topic": "${topic}",
   "difficulty": ${difficulty},
-  "correctAnswer": "ה-id של התשובה הנכונה (למשל '1')",
+  "correctAnswer": "המספר של התשובה הנכונה, מ-1 עד 4",
   "answerOptions": ["תשובה 1", "תשובה 2", "תשובה 3", "תשובה 4"],
   "explanation": "הסבר לתשובה הנכונה"
-}
-
-📌 דוגמה:
-{
-  "question": "מהי בירת צרפת?",
-  "options": [
-    { "id": "1", "text": "רומא" },
-    { "id": "2", "text": "פריז" },
-    { "id": "3", "text": "מדריד" },
-    { "id": "4", "text": "ברלין" }
-  ],
-  "correctAnswer": "2",
-  "explanation": "פריז היא בירת צרפת."
 }
 
 עכשיו צור שאלה חדשה לפי הכללים.
 `;
 
-const response = await axios.post(
-    `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${GEMINI_API_KEY}`,
+    const response = await axios.post(
+      `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${GEMINI_API_KEY}`,
       {
         contents: [{ parts: [{ text: prompt }] }],
       }
     );
 
     const rawText = response.data.candidates?.[0]?.content?.parts?.[0]?.text;
-
     if (!rawText) {
       console.error("Gemini API response missing content:", response.data);
       throw new Error("Gemini API returned empty content");
@@ -65,25 +51,42 @@ const response = await axios.post(
       throw new Error("Gemini response is not in expected JSON format");
     }
 
-const parsed = JSON.parse(jsonMatch[0]);
+    let parsed: any;
+    try {
+      parsed = JSON.parse(jsonMatch[0]);
+    } catch (e) {
+      console.error("Failed to parse JSON:", jsonMatch[0]);
+      throw new Error("Invalid JSON format");
+    }
 
-const answerOptions = parsed.options.map((o: any) => o.text);
-const correctOption = parsed.options.find((o: any) => o.id === parsed.correctAnswer);
-if (!correctOption) {
-  throw new Error("correctAnswer ID not found in options");
-}
+    if (!parsed.answerOptions || !Array.isArray(parsed.answerOptions)) {
+      console.error("Invalid or missing 'answerOptions' in response:", parsed);
+      throw new Error("Gemini response missing 'answerOptions' array");
+    }
 
-const questionData: QuestionInput = {
-  content: parsed.question,
-  topic: topic as 'math' | 'english' | 'hebrew', // <- פתרון לבעיה שלך
-  difficulty,
-  correctAnswer: correctOption.text,
-  answerOptions,
-  explanation: parsed.explanation,
-};
+    if (!parsed.content || !parsed.correctAnswer) {
+      console.error("Missing content or correctAnswer in parsed object:", parsed);
+      throw new Error("Missing content or correctAnswer");
+    }
 
-return questionData;
+    const answerOptions = parsed.answerOptions;
+    const correctIndex = parseInt(parsed.correctAnswer, 10) - 1;
+    const correctOption = answerOptions[correctIndex];
 
+    if (!correctOption) {
+      throw new Error("correctAnswer index not found in answerOptions");
+    }
+
+    const questionData: QuestionInput = {
+      content: parsed.content,
+      topic: topic as 'math' | 'english' | 'hebrew',
+      difficulty,
+      correctAnswer: correctOption,
+      answerOptions,
+      explanation: parsed.explanation || "",
+    };
+
+    return questionData;
 
   } catch (error: any) {
     console.error("Error in generateQuestionFromGemini:", error?.message || error);
