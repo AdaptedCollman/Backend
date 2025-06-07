@@ -3,7 +3,66 @@ import { Test } from '../Models/TestModel';
 import { Question } from '../Models/QuestionModel';
 import { UserQuestion } from '../Models/UserQuestionModel';
 
-// Function to create a test
+
+
+export const getUserStatsFromTests = async (req: Request, res: Response) => {
+  const { userId } = req.params;
+
+  try {
+    const tests = await Test.find({ user: userId, endedAt: { $exists: true } })
+      .sort({ startedAt: 1 }); // סידור לפי סדר ביצוע המבחנים
+
+    if (!tests.length) {
+       res.json({
+        averageScore: 0,
+        totalQuestions: 0,
+        averageDuration: "0s",
+        scores: [],
+      });
+      return
+    }
+
+    const totalScore = tests.reduce((sum, test) => sum + (test.score ?? 0), 0);
+    const totalDuration = tests.reduce((sum, test) => {
+      const duration = test.endedAt && test.startedAt
+        ? (test.endedAt.getTime() - test.startedAt.getTime()) / 1000
+        : 0;
+      return sum + duration;
+    }, 0);
+
+    const averageScore = totalScore / tests.length;
+    const averageDurationSec = totalDuration / tests.length;
+
+    const formatDuration = (seconds: number): string => {
+      if (seconds >= 3600) {
+        const h = Math.floor(seconds / 3600);
+        const m = Math.floor((seconds % 3600) / 60);
+        return `${h}h ${m}m`;
+      } else if (seconds >= 60) {
+        const m = Math.floor(seconds / 60);
+        const s = Math.floor(seconds % 60);
+        return `${m}m ${s}s`;
+      } else {
+        return `${Math.round(seconds)}s`;
+      }
+    };
+
+    const scores = tests.map((t) => t.score ?? 0); // מערך של ציונים
+
+     res.json({
+      averageScore: averageScore.toFixed(1),
+      totalQuestions: tests.length * 63,
+      averageDuration: formatDuration(averageDurationSec),
+      scores,
+    });
+    return
+  } catch (err) {
+    console.error("Error calculating user stats:", err);
+    res.status(500).json({ error: "Failed to fetch test statistics" });
+  }
+};
+
+
 export const createTest = async (req: Request, res: Response) => {
   try {
     const { userId, numQuestions = 20, topics = ['math', 'english', 'hebrew'], difficulty = 3 } = req.body;
@@ -105,5 +164,22 @@ export const finishTest = async (req: Request, res: Response) => {
       return;
     }
   };
+
+  export const getAllTests = async (req:Request,res:Response) => {
+    try{
+      const allTests = await Test.find({});
+      if (!allTests || allTests.length === 0) {
+        res.status(200).send("no tests found")
+        return
+      }
+      res.status(200).json(allTests);
+
+    }
+    catch(error){
+      console.error("Error reaching the DB:", error);
+    res.status(500).json({ error: "Failed to fetch tests from database" })
+      
+    }
+  }
   
   
