@@ -98,12 +98,17 @@ export const login = async (req: Request, res: Response) => {
     const accessToken = generateAccessToken(userPayload);
     const refreshToken = generateRefreshToken(userPayload);
 
-    res.json({
-      accessToken,
-      refreshToken,
-      user: { id: user._id, name: user.name, email: user.email },
-      message: "Login successful",
-    });
+   res.json({
+  accessToken,
+  refreshToken,
+  user: {
+    id: user._id,
+    name: user.name,
+    email: user.email,
+    profileImage: user.profileImage || null, // ✅ החלק שהיה חסר
+  },
+  message: "Login successful",
+});
   } catch (error) {
     console.error("Login error:", error);
     res.status(500).json({ message: "Server error during login" });

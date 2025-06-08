@@ -18,6 +18,7 @@ router.post("/logout", logout);
 router.post("/refresh-token", refreshToken);
 
 
+
 router.get("/verify", authMiddleware, verifyToken);
 router.post("/complete-onboarding", authMiddleware, completeOnboarding);
 
