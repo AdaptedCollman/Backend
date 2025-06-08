@@ -105,7 +105,7 @@ export const login = async (req: Request, res: Response) => {
     id: user._id,
     name: user.name,
     email: user.email,
-    profileImage: user.profileImage || null, // ✅ החלק שהיה חסר
+    profileImage: user.profileImage || null, 
   },
   message: "Login successful",
 });
