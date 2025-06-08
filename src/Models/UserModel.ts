@@ -6,8 +6,10 @@ export interface IUser extends Document {
   passwordHash: string;
   currentLevel: number;
   hasCompletedOnboarding: boolean;
-  refreshToken?: string; // אופציונלי: לשימוש עתידי עם refresh tokens
+  refreshToken?: string;
+  profileImage?: string | null; // ✅ חדש
 }
+
 
 const UserSchema = new Schema<IUser>(
   {
@@ -16,11 +18,13 @@ const UserSchema = new Schema<IUser>(
     passwordHash: { type: String, required: true },
     currentLevel: { type: Number, default: 1 },
     hasCompletedOnboarding: { type: Boolean, default: false },
-    refreshToken: { type: String }, // אם תחליט לשמור אותו במסד
+    refreshToken: { type: String },
+    profileImage: { type: String, default: null }, // ✅ הוספת השדה
   },
   {
-    timestamps: true, // מוסיף createdAt ו־updatedAt אוטומטית
+    timestamps: true,
   }
 );
+
 
 export const User = model<IUser>("User", UserSchema);
