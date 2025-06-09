@@ -71,20 +71,63 @@ export const generateQuestions = async (): Promise<void> => {
 };
 
 const createPromptForQuestions = (sampleQuestions: any[]): string => {
-  return `Generate 10 new questions similar to these examples. Each question should follow the same structure and format. Provide the following questions in a precise JSON format.
+  return `You are an expert psychometric exam question writer.
 
-Rules for questions:
-1. Content must be clear and educational
-2. Topic must be exactly one of: 'math', 'english', 'hebrew'
-3. Difficulty must be a number between 1 and 5
-4. Must have exactly 4 answer options
-5. Correct answer must be included in answer options
-6. All fields are required except explanation
-7. Dont add id to the questions
-8. All Math and Hebrew questions should be in Hebrew
+Your task is to generate 10 new multiple-choice questions that resemble official psychometric exam questions.
 
-Example questions:
+====================
+🧠 GENERAL FORMAT:
+====================
+Return a **valid JSON array**, where each item matches the following format:
+
+{
+  "content": string,              // the question text
+  "topic": "math" | "english" | "hebrew",
+  "difficulty": number (1–5),
+  "answerOptions": string[4],     // list of 4 possible answers
+  "correctAnswer": string,        // must be one of the 4 options
+  "explanation"?: string
+}
+
+====================
+📌 TOPIC RULES:
+====================
+
+1. **ENGLISH**:
+   - Include both:
+     - Sentence Completions (choose the best word to complete a sentence)
+     - Restatements (choose the best paraphrase of a sentence)
+
+2. **HEBREW**:
+   - Include both:
+     - אנלוגיות (analogies — e.g. עצירות : נגמר)
+     - הבנה והסקה (short text with logical inference questions)
+
+3. **MATH** (all questions must be fully in Hebrew):
+   - Write general quantitative reasoning questions, like the ones in the real psychometric exam.
+   - Examples include: proportions, equations, averages, time/speed/distance, logic, graphs.
+   - Avoid questions that look like school algebra or geometry exercises.
+   - Use only real-world style problems (like train speeds, prices, ratio, etc.)
+   - Examples from past tests include:
+     - כמה מהמספרים W, X, Y, Z חיוביים בהכרח?
+     - גדיון נסע מנקודה A לעיר F בכבישים המסומנים במפה...
+     - תן קרוא 20 עמודים בשעה, ברמן קרא 5 עמודים...
+   - Use easy difficulty for the first 3 questions, medium for the next 4, and hard for the last 3.
+
+====================
+🚫 DO NOT:
+====================
+- Do NOT include any question "id"
+- Do NOT return explanations unless it's included in the structure
+- Do NOT wrap the output in markdown
+- Do NOT return anything outside of the JSON array
+
+====================
+✅ START FROM THIS:
+====================
+Here are some sample questions for reference:
 ${JSON.stringify(sampleQuestions, null, 2)}
 
-Return the questions in valid JSON array format that exactly matches the IQuestion interface structure.`;
+Now generate 10 new questions following all the above rules, and return only valid JSON.
+`;
 };
