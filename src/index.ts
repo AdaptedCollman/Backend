@@ -4,18 +4,15 @@ dotenv.config();
 import { app } from "./app";
 import { connectDB } from "./utils/connectDB";
 
-const PORT = process.env.PORT || 3000;
 const MONGO_URI = process.env.MONGO_URI || "";
+connectDB(MONGO_URI);
 
-const startServer = async () => {
-  try {
-    await connectDB(MONGO_URI);
-    app.listen(PORT, () => {
-      console.log(`🚀 Server running at http://localhost:${PORT}`);
-    });
-  } catch (err) {
-    console.error("❌ Failed to start server:", err);
-  }
-};
+// אם מריצים לוקאלית (לא ב־Vercel) → נאזין לפורט
+if (process.env.NODE_ENV !== "production") {
+  const PORT = process.env.PORT || 3000;
+  app.listen(PORT, () => {
+    console.log(`🚀 Server running at http://localhost:${PORT}`);
+  });
+}
 
-startServer();
+export default app;
